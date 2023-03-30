@@ -1,0 +1,1 @@
+pyuic6 UI/doan.ui -o UI/doan.py

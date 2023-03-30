@@ -1,0 +1,6 @@
+src/training/training/
+*.zip
+Yolo/
+images/
+Qt5/
+runs/
