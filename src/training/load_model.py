@@ -51,5 +51,5 @@ def load_model(class_num):
     model.add(keras.layers.GlobalAvgPool2D())
     model.add(keras.layers.Flatten())
     model.add(keras.layers.Dense(10, activation="softmax"))
-    model.add(keras.layers.Dense(class_num))
+    # model.add(keras.layers.Dense(class_num))
     return model

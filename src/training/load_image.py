@@ -15,7 +15,7 @@ img_width = 224
 
 def get_dataset():
     # data_dir = pathlib.Path(r"C:\Users\ACER\.keras\datasets\flower_photos")
-    data_dir = pathlib.Path(r"E:\do-an\images\training")
+    data_dir = pathlib.Path(r"E:\do-an\images\multibottle\training")
 
 
     train_ds = tf.keras.utils.image_dataset_from_directory(
