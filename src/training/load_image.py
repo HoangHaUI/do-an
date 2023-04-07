@@ -13,14 +13,14 @@ img_width = 224
 
 
 
-def get_dataset():
+def get_dataset(img_path):
     # data_dir = pathlib.Path(r"C:\Users\ACER\.keras\datasets\flower_photos")
-    data_dir = pathlib.Path(r"E:\do-an\images\multibottle\training")
+    data_dir = pathlib.Path(img_path)
 
 
     train_ds = tf.keras.utils.image_dataset_from_directory(
     data_dir,
-    validation_split=0.2,
+    validation_split=0.2, # 20% ảnh cho validate, 80% cho training
     subset="training",
     seed=123,
     image_size=(img_height, img_width),
@@ -29,7 +29,7 @@ def get_dataset():
 
     val_ds = tf.keras.utils.image_dataset_from_directory(
     data_dir,
-    validation_split=0.2,
+    validation_split=0.2, # 20% ảnh cho validate, 80% cho training
     subset="validation",
     seed=123,
     image_size=(img_height, img_width),
@@ -37,6 +37,7 @@ def get_dataset():
     class_names = train_ds.class_names
     print(class_names)
 
+    # Normalize data về range [0,1]
     normalization_layer = tf.keras.layers.Rescaling(1./255)
 
     normalized_ds = train_ds.map(lambda x, y: (normalization_layer(x), y))

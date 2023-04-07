@@ -4,3 +4,8 @@ Yolo/
 images/
 Qt5/
 runs/
+detect/
+*.docx
+training/
+*.zip
+*.pyc

@@ -50,6 +50,5 @@ def load_model(class_num):
         prev_filters = filters
     model.add(keras.layers.GlobalAvgPool2D())
     model.add(keras.layers.Flatten())
-    model.add(keras.layers.Dense(10, activation="softmax"))
-    # model.add(keras.layers.Dense(class_num))
+    model.add(keras.layers.Dense(4, activation="softmax")) # 4 là số lượng classes
     return model

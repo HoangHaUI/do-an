@@ -20,7 +20,7 @@ from collections import deque
 
 
 # Load Yolo model
-yolo_model = YOLO("Yolo/yolov8s.pt")
+yolo_model = YOLO("Yolo/yolov8m.pt")
 
 checkpoint_dir = "runs/training/"
 # Load model 
@@ -82,30 +82,52 @@ def predict(path):
     # Write coordination
     for i in range(len(bottle_coord)):
         points= bottle_coord[i]
-        img = cv.rectangle(img, (points[0], points[1]),(points[2], points[3]), (0,255,255), 2)
+        img = cv.rectangle(img, (points[0], points[1]),(points[2], points[3]), (0,255,255), 5)
        
     
     # Get final result:
+    
+    # Xu ly nap
     final_result_nap = "CHUAN"
     indexes_fail_nap = []
     for i, ret in enumerate(predictions_nap):
+        points= nap_coords[i]
+        color = (0,0,0)
+        text = "CHUAN"
         if class_names[np.argmax(ret)] == "thieu_nap":
+            color = (0,0,255)
             final_result_nap = "thieu_nap"
-            points= nap_coords[i]
-            img = cv.rectangle(img, (points[0], points[1]),(points[2], points[3]), (0,0,255), 15)
-    
+            text = "thieu nap"
+            
+        else:
+            text = "CHUAN"
+            color = (0,255,0)
+            
+        cv.putText(img, text, (points[0] + 10,  points[1]-10), cv.FONT_HERSHEY_SIMPLEX, 1.3, color, 5)
+        img = cv.rectangle(img, (points[0], points[1]),(points[2], points[3]), color, 5)
+        cv.putText(img,f"{points[0]}:{points[1]}", (points[0] + 10,  points[1]+60), cv.FONT_HERSHEY_SIMPLEX, 1.3, color, 5)
+
+    # Xu ly nhan
     final_result_nhan = "CHUAN"
     indexes_fail_nhan = []
     for i, ret in enumerate(predictions_nhan):
+        points= nhan_coords[i]
         if class_names[np.argmax(ret)] == "thieu_nhan":
             final_result_nhan = "thieu_nhan"
-            points= nhan_coords[i]
-            img = cv.rectangle(img, (points[0], points[1]),(points[2], points[3]), (0,0,255), 15)
+            color = (0,0,255)
+            text = "thieu nhan"
+
+        else:
+            color = (0,255,0)
+            text = "CHUAN"
+        cv.putText(img, text, (points[0] + 10,  points[1]-10), cv.FONT_HERSHEY_SIMPLEX, 1.3, color, 5)
+        img = cv.rectangle(img, (points[0], points[1]),(points[2], points[3]), color, 5)
+        cv.putText(img, f"{points[0]}:{points[1]}", (points[0] + 10,  points[1]+ 60), cv.FONT_HERSHEY_SIMPLEX, 1.3, color, 5)
             
             
-    for i in range(len(bottle_coord)):
-        points= bottle_coord[i]   
-        cv.putText(img, f"{points[0]}:{points[1]}", (points[0],  points[1]-10), cv.FONT_HERSHEY_SIMPLEX, 0.9, (36,255,12), 2)
+    # for i in range(len(bottle_coord)):
+    #     points= bottle_coord[i]   
+    #     cv.putText(img, f"{points[0]}:{points[1]}", (points[0] + (int)((points[2] - points[0]) / 2.0),  points[1]-10), cv.FONT_HERSHEY_SIMPLEX, 1.3, (0,255,255), 5)
     
     cv.imwrite("ret.png", img)
     if final_result_nap == "CHUAN" and final_result_nhan == "CHUAN":

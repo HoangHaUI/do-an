@@ -34,11 +34,12 @@ if not tf.config.list_physical_devices('GPU'):
 np.random.seed(42)
 tf.random.set_seed(42)
 
-# To plot pretty figures
 
 EPOCHS = 110
+LEARNING_RATE = 0.01
 checkpoint_path = "runs/training/cp-{epoch:04d}.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)
+IMAGE_PATH = r"E:\do-an\images\training"
 
 DefaultConv2D = partial(keras.layers.Conv2D, kernel_size=3, strides=1,
                         padding="SAME", use_bias=False)
@@ -89,16 +90,15 @@ def load_model(class_num):
     # model.add(keras.layers.Dense(class_num))
     return model
 
-# def start_train():
 
-train_ds, val_ds, class_names = load_image.get_dataset()
+train_ds, val_ds, class_names = load_image.get_dataset(IMAGE_PATH)
 
 model = load_model(len(class_names))
 
+# Chọn Optimizer Adam vs learning rate
+opt = keras.optimizers.Adam(learning_rate=LEARNING_RATE)
 
-opt = keras.optimizers.Adam(learning_rate=0.2)
-
-
+# Tạo model checkpoint 
 model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=checkpoint_path,
     save_weights_only=True,
@@ -106,11 +106,13 @@ model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     mode='min',
     save_best_only=True)
 
+# Compile model
 model.compile(
     optimizer= opt,
     loss=tf.keras.losses.SparseCategoricalCrossentropy(),
     metrics=['accuracy'])
 
+# Bat dau training model
 history = model.fit(
     train_ds,
     validation_data=val_ds,
@@ -119,6 +121,7 @@ history = model.fit(
     
 )
 
+# Truc quan hoa ket qua để phân tích
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 
@@ -141,66 +144,3 @@ plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
 plt.show()
 plt.savefig("test.png")
-
-# class_names=["chuan", "thieu_nhan"]
-
-# testing_image = "./images/testing/z4203541157044_792a297f7aabc2382ed980e5c1cd7eb3.jpg"
-# # Evaluate
-# img = tf.keras.utils.load_img(
-#     testing_image, target_size=(244, 244)
-# )
-# img_array = tf.keras.utils.img_to_array(img)
-# img_array = tf.expand_dims(img_array, 0) # Create a batch
-
-# predictions = model.predict(img_array)
-# score = tf.nn.softmax(predictions[0])
-
-# print(
-#     "This image most likely belongs to {} with a {:.2f} percent confidence."
-#     .format(class_names[np.argmax(score)], 100 * np.max(score))
-# )
-
-
-# # Load model 
-# latest = tf.train.latest_checkpoint(checkpoint_dir)
-# latest
-# # Create a new model instance
-# model = load_model(3)
-
-# # Load the previously saved weights
-# model.load_weights(latest)
-
-# # model.predict(img_array)
-# # score = tf.nn.softmax(predictions[0])
-
-# # print(
-# #     "This image most likely belongs to {} with a {:.2f} percent confidence."
-# #     .format(class_names[np.argmax(score)], 100 * np.max(score))
-# # )
-# # # loss, acc = model.evaluate(test_images, test_labels, verbose=2)
-
-
-
-# from glob import glob
-# testing_image = glob("./images/nap_thieu/*.jpg")
-# for path in testing_image:
-#     # Evaluate
-#     img = tf.keras.utils.load_img(
-#         path, target_size=(244, 244)
-#     )
-#     img_array = tf.keras.utils.img_to_array(img)
-#     img_array = tf.expand_dims(img_array, 0) # Create a batch
-
-#     print(np.max(img_array[0]), np.min(img_array[0]))
-#     predictions = model.predict(img_array)
-#     score = tf.nn.softmax(predictions[0])
-
-#     # _,_,class_names = get_dataset()
-
-#     class_names = ['chuan', 'thieu_nhan_dan']
-#     print(
-#         "This image most likely belongs to {} with a {:.2f} percent confidence."
-#         .format(class_names[np.argmax(score)], 100 * np.max(score))
-#     )
-
-
